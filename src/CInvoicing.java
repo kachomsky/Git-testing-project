@@ -1,4 +1,6 @@
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CInvoicing {
 	CClientList m_Clients;
@@ -89,7 +91,7 @@ public class CInvoicing {
 		
 	}
 	public void ListClients(){
-		System.out.print("LISTADO DE CLIENTES MUEBLES JOSE\n");
+		System.out.print("LISTADO DE CLIENTES LIBRERIA EL LAPIZ AFILADO\n");
 		System.out.print("NUMERO DE CLIENTE   NOMBRE\n");
 		CList.CNode node = m_Clients.m_Start;
 		CClient client = (CClient) node.m_Element;
@@ -99,7 +101,7 @@ public class CInvoicing {
 			node = node.m_Next;
 		}
 		
-	}	
+	}
 	// Productos ---------------------------------------------------------------
 	public class CProductNotFound extends Exception {
 		private static final long serialVersionUID=1005L;
@@ -155,7 +157,7 @@ public class CInvoicing {
 		product.m_Price=price;
 	}
 	public void ListProducts(){
-		System.out.print("LISTADO DE PRODUCTOS MUEBLES JOSE\n");
+		System.out.print("LISTADO DE PRODUCTOS LIBRERIA EL LAPIZ AFILADO\n");
 		System.out.print("CODIGO PRODUCTO   NOMBRE    PRECIO PRODUCTO\n");
 		CList.CNode node = m_Products.m_Start;
 		CProduct product = (CProduct) node.m_Element;
@@ -192,11 +194,12 @@ public class CInvoicing {
 		if (invoice==null)  throw new CInvoiceNotFound("Factura no encontrada " + number);
 		return invoice;
 	}
-	public void UpdateInvoiceHeader(CInvoice invoice, int number,CClient client) throws Exception {
+	public void UpdateInvoiceHeader(CInvoice invoice, int number,CClient client, Calendar data) throws Exception {
 		if (!m_Invoices.MemberP(invoice))  throw new CInvoiceNotFound("Factura no encontrada " + invoice.m_Number);
 		if (!m_Clients.MemberP(client))  throw new CClientNotFound("Cliente no encontrado " + client.m_Name);
 		invoice.m_Number=number;
 		invoice.m_Client=client;
+		invoice.m_Date=data;
 	}
 	public void AddProductoToInvoice(CInvoice invoice, CProduct product, int cantidadProducto) throws Exception {
 		if (!m_Invoices.MemberP(invoice))  throw new CInvoiceNotFound("Factura no encontrada " + invoice.m_Number);
@@ -212,8 +215,8 @@ public class CInvoicing {
 	
 	public void ListInvoices(){
 		float total = 0;
-		System.out.print("LISTADO DE FACTURAS MUEBLES JOSE\n");
-		System.out.print("NUMERO DE FACTURA   CLIENTE             IMPORTE\n");
+		System.out.print("LISTADO DE FACTURAS LIBRERIA EL LAPIZ AFILADO\n");
+		System.out.print("NUMERO DE FACTURA FECHA       CLIENTE             IMPORTE\n");
 		CList.CNode node = m_Invoices.m_Start;
 		CInvoice invoice = (CInvoice) node.m_Element;
 		while(node!= null){
@@ -223,5 +226,44 @@ public class CInvoicing {
 		}
 		System.out.print("TOTAL: "+total+"\n");
 		
+	}
+	
+	public void PrintInvoice(int numeroFactura) {
+		float total = 0;
+		CInvoice factura = null;
+		try {
+			factura = FindInvoiceByNumber(numeroFactura);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date data = factura.m_Date.getTime();
+		SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyyy");
+		String fecha = format1.format(data);
+		System.out.println("FACTURA PAPELERIA EL LAPIZ AFILADO");
+		System.out.println("NUMERO: " + factura.m_Number);
+		System.out.println("FECHA: " + fecha);
+		System.out.println("CLIENTE: " + factura.m_Client.m_Name + "\n");
+		System.out.println("CONCEPTO");
+		System.out.println("CANTIDAD  PRODUCTO                 PRECIO UNITARIO  IMPORTE");		
+		CList.CNode node = factura.m_InvoiceLines.m_Start;
+		String maxSpaceProdPrec = "                         " ;
+		String maxSpaceCantProd = "          ";
+		String maxSpacePrecImp = "                 ";
+		while(node!= null){
+			String nombreProducto = ((CInvoiceLine) node.m_Element).m_ProductName;
+			int cantidad = ((CInvoiceLine) node.m_Element).m_ProductQuantity;
+			float precio = m_Products.SearchByName(nombreProducto).m_Price;
+			String space = maxSpaceCantProd.substring(Integer.toString(cantidad).length());
+			System.out.print(cantidad + space);
+			space = maxSpaceProdPrec.substring(nombreProducto.length());
+			System.out.print(nombreProducto + space);
+			space = maxSpacePrecImp.substring(Float.toString(precio).length());
+			System.out.print(precio + space);
+			System.out.println(cantidad*precio);
+			total = total + (cantidad*precio);
+			node = node.m_Next;
+		}
+		System.out.println("TOTAL: " + total);
 	}
 }

@@ -16,5 +16,7 @@ public class CInvoiceLine extends CElement{
 		out.print(m_ProductQuantity);
 		out.print(")");
 	}
+	
+	
 
 }
