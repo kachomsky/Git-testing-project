@@ -1,4 +1,3 @@
-import java.util.Calendar;
 import java.util.Scanner;
 import java.io.*;
 
@@ -134,13 +133,9 @@ public class CMain {
 		}
 		else if (elemento.equalsIgnoreCase("Factura")) {
 			int numero=sl.nextInt();
-			String fechaFacturaStr = sl.next();
-			String[] fechaSplit = fechaFacturaStr.split("/"); 
-			String nombreCliente = sl.next();
-			Calendar fechaFactura = Calendar.getInstance();
-			fechaFactura.set(Integer.parseInt(fechaSplit[2]), Integer.parseInt(fechaSplit[1])-1, Integer.parseInt(fechaSplit[0]));	
+			String nombreCliente= sl.next();
 			if (numero<1) throw new Exception("numero de factura menor que 1 " + numero);
-			m_Invoicing.NewInvoice(new CInvoice(numero,m_Invoicing.FindClientByName(nombreCliente), fechaFactura));			
+			m_Invoicing.NewInvoice(new CInvoice(numero,m_Invoicing.FindClientByName(nombreCliente)));			
 		}
 		else if (elemento.equalsIgnoreCase("Linea")) {
 			int numeroFactura= sl.nextInt();
@@ -165,7 +160,7 @@ public class CMain {
 			else if (campo.equalsIgnoreCase("Numero")) {
 				int nuevoNumero=sl.nextInt();
 				m_Invoicing.UpdateClient(cliente, cliente.m_Name,nuevoNumero);				
-			}			
+			}
 			else throw new CSyntaxError("Modificar Cliente ...");
 		} 
 		else if (elemento.equalsIgnoreCase("Producto")) {
@@ -194,18 +189,11 @@ public class CMain {
 			if (campo.equalsIgnoreCase("Cliente")) {
 				String nuevoCliente=sl.next();
 				CClient cliente=m_Invoicing.FindClientByName(nuevoCliente);
-				m_Invoicing.UpdateInvoiceHeader(factura,factura.m_Number,cliente, factura.m_Date);
+				m_Invoicing.UpdateInvoiceHeader(factura,factura.m_Number,cliente);
 			}
 			else if (campo.equalsIgnoreCase("Numero")) {
 				int nuevoNumero=sl.nextInt();
-				m_Invoicing.UpdateInvoiceHeader(factura,nuevoNumero,factura.m_Client, factura.m_Date);
-			}
-			else if (campo.equalsIgnoreCase("Fecha")) {
-				String fechaString = sl.next();
-				String[] fechaSplit = fechaString.split("/");
-				Calendar fechaFactura = Calendar.getInstance();
-				fechaFactura.set(Integer.parseInt(fechaSplit[2]), Integer.parseInt(fechaSplit[1])-1, Integer.parseInt(fechaSplit[0]));				
-				m_Invoicing.UpdateInvoiceHeader(factura,factura.m_Number,factura.m_Client, fechaFactura);
+				m_Invoicing.UpdateInvoiceHeader(factura,nuevoNumero,factura.m_Client);
 			}
 			else throw new CSyntaxError("Modificar Factura ...");
 		}		
@@ -258,7 +246,7 @@ public class CMain {
 	static void ProcesarListado(Scanner sl) throws Exception {
 		String elemento=sl.next();
 		if (elemento.equalsIgnoreCase("Facturas")) {
-			m_Invoicing.ListInvoices();	
+			m_Invoicing.ListInvoices();
 		}
 		else if (elemento.equalsIgnoreCase("Productos")) {
 			m_Invoicing.ListProducts();
@@ -267,14 +255,6 @@ public class CMain {
 			m_Invoicing.ListClients();
 		}
 		else throw new CSyntaxError("Listado ...");	
-	}
-	static void ProcesarImprimir(Scanner sl) throws Exception {
-		String elemento=sl.next();
-		if (elemento.equalsIgnoreCase("factura")) {
-			//TODO: imprimir factura
-			int numeroFactura = sl.nextInt();
-			m_Invoicing.PrintInvoice(numeroFactura);
-		}
 	}
 	public static void main(String[] args) throws Exception {
 		System.out.println(NIUAlumno1);
@@ -313,7 +293,6 @@ public class CMain {
 						else if (orden.equalsIgnoreCase("Eliminar")) ProcesarEliminar(sl);
 						else if (orden.equalsIgnoreCase("Ver")) ProcesarVer(sl);
 						else if (orden.equalsIgnoreCase("Listado")) ProcesarListado(sl);
-						else if (orden.equalsIgnoreCase("Imprimir")) ProcesarImprimir(sl);
 						else {
 							sl.close();
 							throw new CSyntaxError("Orden no reconocida " + linea);
