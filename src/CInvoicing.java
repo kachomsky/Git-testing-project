@@ -31,9 +31,29 @@ public class CInvoicing {
 	    public CClientHasInvoices(String msg) {
 	        super(msg);
 	    }
+	}	
+	public boolean DuplicadoNombre(String nombre) throws Exception{
+		boolean nombreRepetido = false;
+		if(m_Clients.SearchByName(nombre) != null){			
+			nombreRepetido = true;
+			throw new CClientDuplicatedName("nombre de cliente duplicado " + nombre);
+		}
+		return nombreRepetido;
+	}	
+	public boolean DuplicadoNumero(int numero) throws Exception{
+		boolean numeroRepetido = false;				
+		if(m_Clients.SearchByNumber(numero) != null){			
+			numeroRepetido = true;
+			throw new CClientDuplicatedNumber("numero de cliente duplicado " + numero);
+		}
+		return numeroRepetido;
 	}
-	public void NewClient(CClient client) throws Exception {
-		m_Clients.PushBack(client);
+	public void NewClient(CClient client) throws Exception {				
+		if(!DuplicadoNombre(client.m_Name) && !DuplicadoNumero(client.m_Number)){
+			//if(client.m_Name.length() > 0 && client.m_Number > 0){			
+			m_Clients.PushBack(client);
+			//}			
+		}	
 	}
 	public void DeleteClient(CClient client) throws Exception {
 		if (!m_Clients.MemberP(client))  throw new CClientNotFound("Cliente no encontrado" + client.m_Name);
@@ -52,8 +72,19 @@ public class CInvoicing {
 	}
 	public void UpdateClient(CClient client, String name, int number) throws Exception {
 		if (!m_Clients.MemberP(client)) throw new CClientNotFound("El cliente a modificar no pertenece a la lista de clientes");
-		client.m_Name=name;
-		client.m_Number=number;
+		boolean numDuplicado = false;
+		boolean nombreDuplicado = false;
+		if(!name.equals(client.m_Name)){
+			nombreDuplicado = DuplicadoNombre(name);
+		}
+		if(number != client.m_Number){
+			numDuplicado = DuplicadoNumero(number);
+		}
+		if(!numDuplicado && !nombreDuplicado){
+			client.m_Name=name;
+			client.m_Number=number;
+		}
+		
 	}
 	// Productos ---------------------------------------------------------------
 	public class CProductNotFound extends Exception {
