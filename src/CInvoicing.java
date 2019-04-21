@@ -183,6 +183,7 @@ public class CInvoicing {
 	}
 	public void NewInvoice(CInvoice invoice) throws Exception {
 		if (!m_Clients.MemberP(invoice.m_Client)) throw new CClientNotFound("El cliente de la factura no perteneces a la lista de clientes");
+		if (m_Invoices.SearchByNumber(invoice.m_Number) != null) throw new CInvoiceDuplicatedNumber("numero de factura duplicado: " + invoice.m_Number);
 		m_Invoices.PushBack(invoice);
 	}
 	public void DeleteInvoice(CInvoice invoice) throws Exception {
@@ -197,6 +198,7 @@ public class CInvoicing {
 	public void UpdateInvoiceHeader(CInvoice invoice, int number,CClient client, Calendar data) throws Exception {
 		if (!m_Invoices.MemberP(invoice))  throw new CInvoiceNotFound("Factura no encontrada " + invoice.m_Number);
 		if (!m_Clients.MemberP(client))  throw new CClientNotFound("Cliente no encontrado " + client.m_Name);
+		if(m_Invoices.SearchByNumber(number) != null) throw new CInvoiceDuplicatedNumber("numero de factura duplicado: " + number);
 		invoice.m_Number=number;
 		invoice.m_Client=client;
 		invoice.m_Date=data;

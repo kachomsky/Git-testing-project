@@ -22,17 +22,4 @@ public class CProductList extends CList {
 	public void PushBack(CProduct e) {
 		super.PushBack(e);
 	}
-	
-	/*public ArrayList<CProduct> ProductoUnicos(){
-		ArrayList<CProduct> productos = new ArrayList<CProduct>();
-		CNode node = m_Start;
-		while(node != null) {
-			if(!productos.contains(((CProduct) node.m_Element))) {
-				productos.add(((CProduct) node.m_Element));
-			}
-			node = node.m_Next;
-		}
-		return productos;
-	}*/
-	
 }
