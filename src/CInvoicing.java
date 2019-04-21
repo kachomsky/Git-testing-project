@@ -88,6 +88,18 @@ public class CInvoicing {
 		}
 		
 	}
+	public void ListClients(){
+		System.out.print("LISTADO DE CLIENTES MUEBLES JOSE\n");
+		System.out.print("NUMERO DE CLIENTE   NOMBRE\n");
+		CList.CNode node = m_Clients.m_Start;
+		CClient client = (CClient) node.m_Element;
+		while(node!= null){
+			client = (CClient) node.m_Element;
+			client.listClient(System.out);
+			node = node.m_Next;
+		}
+		
+	}	
 	// Productos ---------------------------------------------------------------
 	public class CProductNotFound extends Exception {
 		private static final long serialVersionUID=1005L;
@@ -141,6 +153,18 @@ public class CInvoicing {
 		product.m_Name=name;
 		product.m_Code=code;
 		product.m_Price=price;
+	}
+	public void ListProducts(){
+		System.out.print("LISTADO DE PRODUCTOS MUEBLES JOSE\n");
+		System.out.print("CODIGO PRODUCTO   NOMBRE    PRECIO PRODUCTO\n");
+		CList.CNode node = m_Products.m_Start;
+		CProduct product = (CProduct) node.m_Element;
+		while(node!= null){
+			product = (CProduct) node.m_Element;
+			product.listProduct(System.out);
+			node = node.m_Next;
+		}
+		
 	}
 	// Facturas ----------------------------------------------------------------
 	public class CInvoiceNotFound extends Exception {

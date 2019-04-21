@@ -247,7 +247,14 @@ public class CMain {
 		String elemento=sl.next();
 		if (elemento.equalsIgnoreCase("Facturas")) {
 			m_Invoicing.ListInvoices();
-		}else throw new CSyntaxError("Listado ...");	
+		}
+		else if (elemento.equalsIgnoreCase("Productos")) {
+			m_Invoicing.ListProducts();
+		}
+		else if (elemento.equalsIgnoreCase("Clientes")) {
+			m_Invoicing.ListClients();
+		}
+		else throw new CSyntaxError("Listado ...");	
 	}
 	public static void main(String[] args) throws Exception {
 		System.out.println(NIUAlumno1);

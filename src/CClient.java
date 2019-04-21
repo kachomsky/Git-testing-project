@@ -14,5 +14,13 @@ public class CClient extends CElement {
 		out.print(m_Number);
 		out.print(")");
 	}
+	
+	public void listClient(PrintStream out){
+		String maxSpace="                    ";
+		String maxSpace2 = "                    ";
+		String space = maxSpace.substring(Integer.toString(m_Number).length());
+		String space2 = maxSpace2.substring(m_Name.length());
+		out.print(m_Number+space+m_Name+space2+"\n");
+	}
 }
 

@@ -18,4 +18,12 @@ public class CProduct extends CElement {
 		out.print(m_Price);
 		out.print(")");
 	}
+	
+	public void listProduct(PrintStream out){
+		String maxSpace = "                    ";
+		String space = maxSpace.substring(m_Name.length());
+		
+		out.print(m_Code+"                 "+m_Name+space+m_Price+"\n");
+		
+	}
 }
