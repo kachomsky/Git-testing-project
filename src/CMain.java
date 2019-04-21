@@ -127,8 +127,9 @@ public class CMain {
 		else if (elemento.equalsIgnoreCase("Producto")) {
 			String nombre=sl.next();
 			int codigo= sl.nextInt();
+			float precio = sl.nextFloat();
 			if (codigo<1) throw new Exception("codigo de producto menor que 1 " + codigo);
-			m_Invoicing.NewProduct(new CProduct(nombre,codigo));
+			m_Invoicing.NewProduct(new CProduct(nombre,codigo,precio));
 		}
 		else if (elemento.equalsIgnoreCase("Factura")) {
 			int numero=sl.nextInt();
@@ -139,9 +140,10 @@ public class CMain {
 		else if (elemento.equalsIgnoreCase("Linea")) {
 			int numeroFactura= sl.nextInt();
 			String nombreProducto= sl.next();
+			int cantidadProducto = sl.nextInt();
 			CInvoice factura=m_Invoicing.FindInvoiceByNumber(numeroFactura);
 			CProduct producto=m_Invoicing.FindProductByName(nombreProducto);
-			m_Invoicing.AddProductoToInvoice(factura, producto);			
+			m_Invoicing.AddProductoToInvoice(factura, producto,cantidadProducto);			
 		}
 		else throw new CSyntaxError("Nuevo ...");
 	}
@@ -167,12 +169,17 @@ public class CMain {
 			String campo=sl.next();
 			if (campo.equalsIgnoreCase("Nombre")) {
 				String nuevoNombre=sl.next();
-				m_Invoicing.UpdateProduct(producto, nuevoNombre, producto.m_Code);
+				m_Invoicing.UpdateProduct(producto, nuevoNombre, producto.m_Code, producto.m_Price);
 			}
 			else if (campo.equalsIgnoreCase("Codigo")) {
 				int nuevoCodigo=sl.nextInt();
-				m_Invoicing.UpdateProduct(producto, producto.m_Name, nuevoCodigo);
+				m_Invoicing.UpdateProduct(producto, producto.m_Name, nuevoCodigo, producto.m_Price);
 			}
+			else if (campo.equalsIgnoreCase("Precio")) {
+				float nuevoPrecio=sl.nextInt();
+				m_Invoicing.UpdateProduct(producto, producto.m_Name, producto.m_Code, nuevoPrecio);
+			}
+			
 			else throw new CSyntaxError("Modificar Producto ...");
 		}
 		else if (elemento.equalsIgnoreCase("Factura")) {
@@ -236,6 +243,12 @@ public class CMain {
 		}
 		else throw new CSyntaxError("Ver ...");		
 	}
+	static void ProcesarListado(Scanner sl) throws Exception {
+		String elemento=sl.next();
+		if (elemento.equalsIgnoreCase("Facturas")) {
+			m_Invoicing.ListInvoices();
+		}else throw new CSyntaxError("Listado ...");	
+	}
 	public static void main(String[] args) throws Exception {
 		System.out.println(NIUAlumno1);
 		System.out.println(NombreAlumno1);
@@ -272,6 +285,7 @@ public class CMain {
 						else if (orden.equalsIgnoreCase("Modificar")) ProcesarModificar(sl);
 						else if (orden.equalsIgnoreCase("Eliminar")) ProcesarEliminar(sl);
 						else if (orden.equalsIgnoreCase("Ver")) ProcesarVer(sl);
+						else if (orden.equalsIgnoreCase("Listado")) ProcesarListado(sl);
 						else {
 							sl.close();
 							throw new CSyntaxError("Orden no reconocida " + linea);

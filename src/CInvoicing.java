@@ -1,3 +1,5 @@
+
+
 public class CInvoicing {
 	CClientList m_Clients;
 	CProductList m_Products;
@@ -132,12 +134,13 @@ public class CInvoicing {
 		if (p==null) throw new CProductNotFound("No se ha encontrado el producto con codigo " + code);
 		return p;
 	}
-	public void UpdateProduct(CProduct product, String name, int code) throws Exception {
+	public void UpdateProduct(CProduct product, String name, int code, float price) throws Exception {
 		if (!m_Products.MemberP(product)) throw new CProductNotFound("El producto a modificar no pertenece a la lista de productos");
 		if (!product.m_Name.equalsIgnoreCase(name) && m_Products.SearchByName(name)!=null) throw new CProductDuplicatedName("nombre de producto duplicado " + name);
 		if (product.m_Code!=code && m_Products.SearchByCode(code)!=null) throw new CProductDuplicatedCode("codigo de producto duplicado " + code);
 		product.m_Name=name;
 		product.m_Code=code;
+		product.m_Price=price;
 	}
 	// Facturas ----------------------------------------------------------------
 	public class CInvoiceNotFound extends Exception {
@@ -171,15 +174,30 @@ public class CInvoicing {
 		invoice.m_Number=number;
 		invoice.m_Client=client;
 	}
-	public void AddProductoToInvoice(CInvoice invoice, CProduct product) throws Exception {
+	public void AddProductoToInvoice(CInvoice invoice, CProduct product, int cantidadProducto) throws Exception {
 		if (!m_Invoices.MemberP(invoice))  throw new CInvoiceNotFound("Factura no encontrada " + invoice.m_Number);
 		if (!m_Products.MemberP(product))  throw new CProductNotFound("Producto no encontrado " + product.m_Name);
 		if (invoice.m_Products.MemberP(product)) throw new Exception("Producto duplicado en factura " + product.m_Name);
-		invoice.AddProduct(product);
+		invoice.AddProduct(product, cantidadProducto);
 	}
 	public void DeleteProductFromInvoice(CInvoice invoice, CProduct product) throws Exception {
 		if (!m_Invoices.MemberP(invoice))  throw new CInvoiceNotFound("Factura no encontrada " + invoice.m_Number);
 		if (!invoice.m_Products.MemberP(product))  throw new CProductNotFound("Producto no encontrado " + product.m_Name);
 		invoice.DeleteProduct(product);
+	}
+	
+	public void ListInvoices(){
+		float total = 0;
+		System.out.print("LISTADO DE FACTURAS MUEBLES JOSE\n");
+		System.out.print("NUMERO DE FACTURA   CLIENTE             IMPORTE\n");
+		CList.CNode node = m_Invoices.m_Start;
+		CInvoice invoice = (CInvoice) node.m_Element;
+		while(node!= null){
+			invoice = (CInvoice) node.m_Element;
+			total=total+invoice.listInvoice(System.out);
+			node = node.m_Next;
+		}
+		System.out.print("TOTAL: "+total+"\n");
+		
 	}
 }
